@@ -11,4 +11,6 @@ public class Config {
     public static int LEVEL = 4;//默认为4x4
     public static int SHOW_COUNT = 1;//每次增加的个数
 
+    public static final String SP_NAME = "game2048";
+
 }

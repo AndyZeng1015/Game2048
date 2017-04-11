@@ -1,23 +1,20 @@
 package com.zyn.game2048.activity;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.MotionEvent;
-import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.zyn.game2048.R;
 import com.zyn.game2048.appwidget.GameView;
 import com.zyn.game2048.base.BaseActivity;
-
-import org.w3c.dom.Text;
+import com.zyn.game2048.util.SharedPreferencesUtils;
 
 public class MainActivity extends BaseActivity {
 
     private GameView gv_view;
     private TextView tv_score;
     private TextView tv_best;
+    private String gameData;
+    private int gameScore;
 
     private static MainActivity instance;
 
@@ -26,6 +23,20 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         instance = this;
         initView();
+        initData();
+    }
+
+    private void initData() {
+        tv_best.setText(loadBestScore()+"");
+        if(getIntent().getBundleExtra("keys") != null){
+            gameData = getIntent().getBundleExtra("keys").getString("game_data");
+            gameScore = getIntent().getBundleExtra("keys").getInt("game_score");
+            if(!gameData.isEmpty()){
+                //表示继续游戏
+                gv_view.loadHistoryGame(gameData);
+                tv_score.setText(gameScore+"");
+            }
+        }
     }
 
     private void initView() {
@@ -52,6 +63,8 @@ public class MainActivity extends BaseActivity {
     //添加分数
     public void addScore(int addScore){
         tv_score.setText(Integer.parseInt(tv_score.getText().toString())+addScore+"");
+        //最高分设置
+        exceedBest();
     }
 
     //获取当前分数
@@ -69,4 +82,16 @@ public class MainActivity extends BaseActivity {
         return Integer.parseInt(tv_best.getText().toString());
     }
 
+    //获取保存的最高分
+    public int loadBestScore(){
+        return SharedPreferencesUtils.getInt(mContext, "game_best_score", 0);
+    }
+
+    //判断是当前游戏的最高分是否大于保存的最高分
+    public void exceedBest(){
+        if(Integer.parseInt(tv_score.getText().toString()) > Integer.parseInt(tv_best.getText().toString())){
+            //当前分数大于最高分
+            tv_best.setText(tv_score.getText().toString());
+        }
+    }
 }
