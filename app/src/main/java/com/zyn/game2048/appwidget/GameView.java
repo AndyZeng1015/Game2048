@@ -480,7 +480,7 @@ public class GameView extends GridLayout {
         isLoadData = true;
     }
 
-    //保存当前游戏记录
+    //保存当前游戏记录.
     public void saveCurrentGame(){
         String gameData = "";
         for (int y = 0; y < Config.LEVEL; y++) {
